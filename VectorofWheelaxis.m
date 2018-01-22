@@ -15,7 +15,7 @@ classdef VectorofWheelaxis<handle
         %ControlPoints输入的为一个数组3*N
         function Vector=GetVectorofWheelaxis(obj,ControlPoints)%控制顶点
             %1.根据累加弦长计算GringdingPoints对应的参数数组U
-            U=U_GrindingPoints(obj.GrindingPoints);
+            U=Ask_Points_U(obj.GrindingPoints);
             %2.根据ControlPoints和次数order得到控制线Curve
             Curve = ControlCurve(ControlPoints,obj.order);
             %3.在Sc依次取u(i)得到对应刀触点组GrindingPoints(i)的对应点Q；

@@ -5,11 +5,16 @@ function [ normal_vector ] = GetSurface_normal_vector( VirtualSurface,GrindingPo
 M=800;%描述曲面上离散的疏密程度
 [Total_close_u,~]=Askpoints_surMindis_total(VirtualSurface,GrindingPoints,M,M);%获得刀触点对应的u，v参
 %[Total_Close_points] = nrbeval(VirtualSurface,Total_close_u);
-Deriv_Surface11 = nrbderiv (VirtualSurface);  
+Deriv_Surface11 = nrbderiv (VirtualSurface);
 [~,Deriv_points] = nrbdeval(VirtualSurface,Deriv_Surface11,Total_close_u);
 normal_vector=zeros(3,size(GrindingPoints,2));
-parfor i=1:size(GrindingPoints,2)
-    normal_vector(:,i)=cross(Deriv_points{1}(:,i),Deriv_points{2}(:,i))/norm(cross(Deriv_points{1}(:,i),Deriv_points{2}(:,i)));       
-end  
+for i=1:size(GrindingPoints,2)
+    normal_vector(:,i)=cross(Deriv_points{1}(:,i),Deriv_points{2}(:,i))/norm(cross(Deriv_points{1}(:,i),Deriv_points{2}(:,i)));
+end
+% for i=2:1:size(GrindingPoints,2)
+%     if (dot(normal_vector(:,i),normal_vector(:,i-1))<0)
+%         normal_vector(:,i)=-normal_vector(:,i);
+%     end
+% end
 end
 

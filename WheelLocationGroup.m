@@ -1,4 +1,4 @@
-classdef WheelLocationGroup < handle
+ classdef WheelLocationGroup < handle
     %该类输入拟合曲面Sv，一行刀触点及其对应的刀轴矢量，
     %输出对应的刀位点（以工件坐标系为基准）
     properties
@@ -20,10 +20,15 @@ classdef WheelLocationGroup < handle
             n=size(VectorofWheelaxis,2);
             %得到曲面法矢
             normal_vectors=GetSurface_normal_vector(obj.Sv,obj.GrindingPoints);
+            for i=2:1:size(normal_vectors,2)
+                if (dot(normal_vectors(:,i),normal_vectors(:,i-1))<0)
+                    normal_vectors(:,i)=-normal_vectors(:,i);
+                end
+            end
             %%利用Schmidt正交化方法，通过刀轴矢量与法矢构成的平面内与刀轴矢量垂直的矢量
             v=zeros(3,n);
             for i=1:n
-                v(:,i)=VectorofWheelaxis(:,i)-dot(normal_vectors(:,i),VectorofWheelaxis(:,i))/dot(VectorofWheelaxis(:,i),VectorofWheelaxis(:,i))*VectorofWheelaxis(:,i);
+                v(:,i)=normal_vectors(:,i)-dot(normal_vectors(:,i),VectorofWheelaxis(:,i))/dot(VectorofWheelaxis(:,i),VectorofWheelaxis(:,i))*VectorofWheelaxis(:,i);
                 v(:,i)=v(:,i)/norm(v(:,i));
             end
             %刀轴矢量的方向已知，矢量相加，加L/2
@@ -32,9 +37,9 @@ classdef WheelLocationGroup < handle
             %与法矢的夹角判断R的加减
             for i=1:n
                 if(dot(normal_vectors(:,i),v(:,i))<0)
-                    Locations(:,i)=Locations(:,i)+obj.GrindingWheel.R*v(:,i);
+                    Locations(:,i)=Locations(:,i)+obj.GrindingWheel.R1*v(:,i);
                 else
-                    Locations(:,i)=Locations(:,i)-obj.GrindingWheel.R*v(:,i);
+                    Locations(:,i)=Locations(:,i)-obj.GrindingWheel.R1*v(:,i);
                 end
             end 
         end      
